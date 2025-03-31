@@ -1,0 +1,7 @@
+# Ignore all .exe files
+*.exe
+
+# You can also ignore other build files if needed
+*.out
+*.o
+*.obj
