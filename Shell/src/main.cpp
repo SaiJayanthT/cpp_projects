@@ -1,6 +1,12 @@
-#include <iostream>
+#include "shell.hpp"
 
-int main(int argc, char** argv){
+using namespace std;
+
+int main(void){
     
+    Shell shell;
+
+    shell.start();
+
     return 0;
 }

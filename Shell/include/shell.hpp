@@ -1,14 +1,22 @@
 #ifndef SHELL_H
 #define SHELL_H
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
 
-namespace dev{
+void logger(std::string);
 
 // Shell Class
 class Shell {
 
 private:
+    std::string line;
+    int status;
+    std::vector<std::string> commands;
 
-    int job(char **);
+    int job(std::string);   
+
 
 public:
 
@@ -16,9 +24,9 @@ public:
 
     void start(void);
 
-    char* read(void);
+    void read(void);
 
-    char** spilt(char*);
+    void split();
 
     int execute(char**);
 
@@ -39,8 +47,5 @@ class Command {
     
 
 };
-
-
-}
 
 #endif

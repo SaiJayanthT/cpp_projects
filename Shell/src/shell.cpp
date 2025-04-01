@@ -1,48 +1,74 @@
 #include "shell.hpp"
 
-int dev::Shell::job(char **)
+void logger(std::string data){
+    std::cout << "<log> " << data << " </log>" << std::endl;
+}
+
+
+Shell::Shell()
+{
+    logger("Shell Created");
+}
+
+int Shell::job(std::string)
 {
     return 0;
 }
 
-dev::Shell::Shell()
+void Shell::start(void)
 {
+    do{
+        std::cout << "C++@SHELL MINGW64 (CUSTOM MADE)" << std::endl;
+        std::cout << "$ ";
+        read();
+        split();
+    }while(1);
 }
 
-void dev::Shell::start(void)
+void Shell::read(void)
 {
+    // Read commands in cin
+    getline(std::cin, line);
+    std::cout << line << std::endl;
+
 }
 
-char *dev::Shell::read(void)
+void Shell::split()
 {
-    return nullptr;
+    std::stringstream buffer;
+    buffer << line;
+    std::string cmd;
+
+    while (getline(buffer, cmd, ' ')){
+        commands.push_back(cmd);
+    }
+
+    for (std::string& c: commands){
+        std::cout << c << std::endl;
+    } 
+    std::cout << std::endl;
 }
 
-char **dev::Shell::spilt(char *)
-{
-    return nullptr;
-}
-
-int dev::Shell::execute(char **)
+int Shell::execute(char **)
 {
     return 0;
 }
 
-int dev::Command::help(char **args)
+int Command::help(char **args)
 {
     return 0;
 }
 
-int dev::Command::cd(char **args)
+int Command::cd(char **args)
 {
     return 0;
 }
 
-int dev::Command::shell_exit(char **args)
+int Command::shell_exit(char **args)
 {
     return 0;
 }
 
-dev::Command::Command()
+Command::Command()
 {
 }
