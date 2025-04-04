@@ -19,9 +19,9 @@ class Shell {
 private:
     string userInput;
 
-    int cmdStatus;
+    int commandStatus;
 
-    vector<string> commands;
+    string commandName;
 
     Command* commandObject;
 
@@ -46,12 +46,15 @@ public:
 class Command {
 
     map<string, commandFuncPtr> availableCommands;
+    vector<string> commandArgs;
 
     Command();
 
     int exit(void);
 
     int hello(void);
+
+    int add(void);
 
     int invalidCommand(void);
 

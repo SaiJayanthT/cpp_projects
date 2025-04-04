@@ -31,26 +31,29 @@ void Shell::start(void)
         cout << "C++@SHELL MINGW64 (CUSTOM MADE)" << endl;
         cout << "$ ";
         read();
-        cmdStatus = execute();
-        // Clear
-        commands.clear();
+        commandStatus = execute();
 
-    }while(cmdStatus);
+        // Clear
+        commandName = " ";
+        commandObject->commandArgs.clear();
+
+    }while(commandStatus);
 }
 
 void Shell::read(void)
 {
+    stringstream buffer;
+    string args;
+
     // Read commands in cin
     getline(cin, userInput);
 
-    stringstream buffer;
-
     buffer << userInput;
 
-    string args;
+    getline(buffer, commandName, ' ');
 
     while (getline(buffer, args, ' ')){
-        commands.push_back(args);
+        commandObject->commandArgs.push_back(args);
     }
 
 }
@@ -69,6 +72,7 @@ Command::Command()
 {
     availableCommands["exit"] = Command::exit;
     availableCommands["hello"] = Command::hello;
+    availableCommands["add"] = Command::add;
     
 }
 
@@ -84,10 +88,18 @@ int Command::hello(void)
     return 1;
 }
 
+int Command::add(void)
+{
+    int num1 = stoi(commandArgs[0]);
+    int num2 = stoi(commandArgs[1]);
+    cout << num1 << " + " << num2 << " = " << (num1 + num2) << endl;
+    return 1;
+}
+
 commandFuncPtr Shell::get_cmd(void)
 {
     for (pair<string, commandFuncPtr> p : commandObject->availableCommands){
-        if (p.first == commands[0])
+        if (p.first == commandName)
         {
             return p.second;
         }
