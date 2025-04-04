@@ -17,13 +17,8 @@ typedef int(Command::*commandFuncPtr)(void);
 class Shell {
 
 private:
-    string userInput;
 
-    int commandStatus;
-
-    string commandName;
-
-    Command* commandObject;
+    Command* command;
 
 
 public:
@@ -38,15 +33,15 @@ public:
 
     int execute();
 
-    commandFuncPtr get_cmd(void);
-
 };
 
 // Command Class
 class Command {
 
-    map<string, commandFuncPtr> availableCommands;
-    vector<string> commandArgs;
+    string name;
+    map<string, commandFuncPtr> bucket;
+    vector<string> args;
+    int status;
 
     Command();
 
@@ -57,6 +52,8 @@ class Command {
     int add(void);
 
     int invalidCommand(void);
+
+    commandFuncPtr operator()(void);
 
     friend class Shell;
 

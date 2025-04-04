@@ -3,14 +3,14 @@
 // Shell Class
 Shell::Shell()
 {
-    commandObject = new Command();
+    command = new Command();
     cout << "#################################################" << endl;
     cout << "############## WELCOME TO SHELL #################" << endl;
     cout << "#################################################" << endl;
 
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
     cout << "+++++++++++++++ AVAILABLE COMMANDS ++++++++++++++" << endl;
-    for (pair<string, commandFuncPtr> p : commandObject->availableCommands){
+    for (pair<string, commandFuncPtr> p : command->bucket){
         cout << ">> " << p.first << endl;
     }
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
@@ -18,7 +18,7 @@ Shell::Shell()
 
 Shell::~Shell()
 {
-    delete commandObject;
+    delete command;
     cout << "#################################################" << endl;
     cout << "############## SHELL EXIT #######################" << endl;
     cout << "#################################################" << endl;
@@ -31,29 +31,29 @@ void Shell::start(void)
         cout << "C++@SHELL MINGW64 (CUSTOM MADE)" << endl;
         cout << "$ ";
         read();
-        commandStatus = execute();
+        command->status = execute();
 
         // Clear
-        commandName = " ";
-        commandObject->commandArgs.clear();
+        command->name = " ";
+        command->args.clear();
 
-    }while(commandStatus);
+    }while(command->status);
 }
 
 void Shell::read(void)
 {
     stringstream buffer;
-    string args;
+    string userInput, args;
 
     // Read commands in cin
     getline(cin, userInput);
 
     buffer << userInput;
 
-    getline(buffer, commandName, ' ');
+    getline(buffer, command->name, ' ');
 
     while (getline(buffer, args, ' ')){
-        commandObject->commandArgs.push_back(args);
+        command->args.push_back(args);
     }
 
 }
@@ -61,18 +61,19 @@ void Shell::read(void)
 int Shell::execute()
 {
 
-    int(Command::*func)(void) = get_cmd();
+    int(Command::*func)(void) = (*command)();
 
-    return (commandObject->*func)();
+    return (command->*func)();
 }
+
 
 
 // Command Class
 Command::Command()
 {
-    availableCommands["exit"] = Command::exit;
-    availableCommands["hello"] = Command::hello;
-    availableCommands["add"] = Command::add;
+    bucket["exit"] = Command::exit;
+    bucket["hello"] = Command::hello;
+    bucket["add"] = Command::add;
     
 }
 
@@ -90,22 +91,22 @@ int Command::hello(void)
 
 int Command::add(void)
 {
-    int num1 = stoi(commandArgs[0]);
-    int num2 = stoi(commandArgs[1]);
+    int num1 = stoi(args[0]);
+    int num2 = stoi(args[1]);
     cout << num1 << " + " << num2 << " = " << (num1 + num2) << endl;
     return 1;
 }
 
-commandFuncPtr Shell::get_cmd(void)
+commandFuncPtr Command::operator()(void)
 {
-    for (pair<string, commandFuncPtr> p : commandObject->availableCommands){
-        if (p.first == commandName)
+    for (pair<string, commandFuncPtr> p : bucket){
+        if (p.first == name)
         {
             return p.second;
         }
 
     }
-    return &Command::invalidCommand;
+    return Command::invalidCommand;
 }
 
 int Command::invalidCommand(void)
@@ -113,5 +114,4 @@ int Command::invalidCommand(void)
     cout << "!!! Received Invalid Command. Please Try Again !!! \n" << endl;
     return 1;
 }
-
 
