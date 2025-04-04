@@ -1,74 +1,87 @@
 #include "shell.hpp"
 
-void logger(std::string data){
-    std::cout << "<log> " << data << " </log>" << std::endl;
-}
-
 
 Shell::Shell()
 {
-    logger("Shell Created");
+    cmd = new Command();
 }
 
-int Shell::job(std::string)
+Shell::~Shell()
 {
-    return 0;
+    delete cmd;
+    cout << "Deleted Command Object" << endl;
 }
+
 
 void Shell::start(void)
 {
     do{
-        std::cout << "C++@SHELL MINGW64 (CUSTOM MADE)" << std::endl;
-        std::cout << "$ ";
+        cout << "C++@SHELL MINGW64 (CUSTOM MADE)" << endl;
+        cout << "$ ";
         read();
         split();
-    }while(1);
+        cmdStatus = execute();
+        // Clear
+        commands.clear();
+
+    }while(cmdStatus);
 }
 
 void Shell::read(void)
 {
     // Read commands in cin
-    getline(std::cin, line);
-    std::cout << line << std::endl;
+    getline(cin, userInput);
 
 }
 
 void Shell::split()
 {
-    std::stringstream buffer;
-    buffer << line;
-    std::string cmd;
+    stringstream buffer;
+    buffer << userInput;
+    string args;
 
-    while (getline(buffer, cmd, ' ')){
-        commands.push_back(cmd);
+    while (getline(buffer, args, ' ')){
+        commands.push_back(args);
     }
 
-    for (std::string& c: commands){
-        std::cout << c << std::endl;
-    } 
-    std::cout << std::endl;
 }
 
-int Shell::execute(char **)
+int Shell::execute()
 {
-    return 0;
-}
 
-int Command::help(char **args)
-{
-    return 0;
-}
-
-int Command::cd(char **args)
-{
-    return 0;
-}
-
-int Command::shell_exit(char **args)
-{
-    return 0;
+    int(Command::*func)(void) = get_cmd();
+    return (cmd->*func)();
 }
 
 Command::Command()
 {
+    avbcmd["exit"] = Command::exit;
+    
 }
+
+
+int Command::exit()
+{
+    cout << "exit Called" << endl;
+    return 0;
+}
+
+func_ptr Shell::get_cmd(void)
+{
+    for (pair<string, func_ptr> p : cmd->avbcmd){
+        if (p.first == commands[0])
+        {
+            return p.second;
+        }
+
+    }
+    return &Command::dummy;
+}
+
+int Command::dummy(void)
+{
+    cout << "Dummy Called" << endl;
+    return 0;
+}
+
+

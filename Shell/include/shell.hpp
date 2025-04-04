@@ -4,23 +4,33 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
+#include <utility>
 
-void logger(std::string);
+using namespace std;
+
+class Command;
+
+typedef int(Command::*func_ptr)(void);
 
 // Shell Class
 class Shell {
 
 private:
-    std::string line;
-    int status;
-    std::vector<std::string> commands;
+    string userInput;
 
-    int job(std::string);   
+    int cmdStatus;
+
+    vector<string> commands;
+
+    Command* cmd;
 
 
 public:
 
     Shell();
+
+    ~Shell();
 
     void start(void);
 
@@ -28,23 +38,28 @@ public:
 
     void split();
 
-    int execute(char**);
+    int execute();
+
+    func_ptr get_cmd(void);
 
 };
 
 // Command Class
 class Command {
 
+public:
+    
+
+    map<string, func_ptr> avbcmd;
+
     Command();
 
-    int help(char** args);
-
-    int cd(char** args);
-
-    int shell_exit(char** args);
-
     friend class Shell;
-    
+
+    int exit(void);
+
+    int dummy(void);
+
 
 };
 
