@@ -1,15 +1,27 @@
 #include "shell.hpp"
 
-
+// Shell Class
 Shell::Shell()
 {
-    cmd = new Command();
+    commandObject = new Command();
+    cout << "#################################################" << endl;
+    cout << "############## WELCOME TO SHELL #################" << endl;
+    cout << "#################################################" << endl;
+
+    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+    cout << "+++++++++++++++ AVAILABLE COMMANDS ++++++++++++++" << endl;
+    for (pair<string, commandFuncPtr> p : commandObject->availableCommands){
+        cout << ">> " << p.first << endl;
+    }
+    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 }
 
 Shell::~Shell()
 {
-    delete cmd;
-    cout << "Deleted Command Object" << endl;
+    delete commandObject;
+    cout << "#################################################" << endl;
+    cout << "############## SHELL EXIT #######################" << endl;
+    cout << "#################################################" << endl;
 }
 
 
@@ -19,7 +31,6 @@ void Shell::start(void)
         cout << "C++@SHELL MINGW64 (CUSTOM MADE)" << endl;
         cout << "$ ";
         read();
-        split();
         cmdStatus = execute();
         // Clear
         commands.clear();
@@ -32,12 +43,10 @@ void Shell::read(void)
     // Read commands in cin
     getline(cin, userInput);
 
-}
-
-void Shell::split()
-{
     stringstream buffer;
+
     buffer << userInput;
+
     string args;
 
     while (getline(buffer, args, ' ')){
@@ -50,38 +59,47 @@ int Shell::execute()
 {
 
     int(Command::*func)(void) = get_cmd();
-    return (cmd->*func)();
+
+    return (commandObject->*func)();
 }
 
+
+// Command Class
 Command::Command()
 {
-    avbcmd["exit"] = Command::exit;
+    availableCommands["exit"] = Command::exit;
+    availableCommands["hello"] = Command::hello;
     
 }
 
 
 int Command::exit()
 {
-    cout << "exit Called" << endl;
     return 0;
 }
 
-func_ptr Shell::get_cmd(void)
+int Command::hello(void)
 {
-    for (pair<string, func_ptr> p : cmd->avbcmd){
+    cout << "Hello Sir/Madam." << endl;
+    return 1;
+}
+
+commandFuncPtr Shell::get_cmd(void)
+{
+    for (pair<string, commandFuncPtr> p : commandObject->availableCommands){
         if (p.first == commands[0])
         {
             return p.second;
         }
 
     }
-    return &Command::dummy;
+    return &Command::invalidCommand;
 }
 
-int Command::dummy(void)
+int Command::invalidCommand(void)
 {
-    cout << "Dummy Called" << endl;
-    return 0;
+    cout << "!!! Received Invalid Command. Please Try Again !!! \n" << endl;
+    return 1;
 }
 
 

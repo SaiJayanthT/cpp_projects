@@ -11,7 +11,7 @@ using namespace std;
 
 class Command;
 
-typedef int(Command::*func_ptr)(void);
+typedef int(Command::*commandFuncPtr)(void);
 
 // Shell Class
 class Shell {
@@ -23,7 +23,7 @@ private:
 
     vector<string> commands;
 
-    Command* cmd;
+    Command* commandObject;
 
 
 public:
@@ -36,30 +36,26 @@ public:
 
     void read(void);
 
-    void split();
-
     int execute();
 
-    func_ptr get_cmd(void);
+    commandFuncPtr get_cmd(void);
 
 };
 
 // Command Class
 class Command {
 
-public:
-    
-
-    map<string, func_ptr> avbcmd;
+    map<string, commandFuncPtr> availableCommands;
 
     Command();
 
-    friend class Shell;
-
     int exit(void);
 
-    int dummy(void);
+    int hello(void);
 
+    int invalidCommand(void);
+
+    friend class Shell;
 
 };
 
