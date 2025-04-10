@@ -85,7 +85,7 @@ int Command::exit()
 
 int Command::hello(void)
 {
-    cout << "Hello Sir/Madam." << endl;
+    cout << "Hello World!." << endl;
     return 1;
 }
 
